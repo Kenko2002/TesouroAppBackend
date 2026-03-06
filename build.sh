@@ -1,7 +1,11 @@
-#!/bin/bash
 
-echo "Installing dependencies..."
-python3.9 -m pip install -r requirements.txt
+# Instala as dependências
+echo "Installing pip..."
+python3 -m pip install --upgrade pip
 
+echo "Installing requirements..."
+python3 -m pip install -r requirements.txt
+
+# Coleta os arquivos estáticos
 echo "Collecting static files..."
-python3.9 manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear
