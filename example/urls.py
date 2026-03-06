@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from rest_framework.routers import DefaultRouter
 from example.views import index, login_view, logout_view, user_profile
 from .viewsets import UserViewSet
+from .views import api_login
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
