@@ -41,3 +41,22 @@ def logout_view(request):
 def user_profile(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def api_login(request):
+    # espera campos 'username' e 'password'
+    username = request.data.get('username')
+    password = request.data.get('password')
+    from django.contrib.auth import authenticate
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)  # cria sessão
+        # obtiene token CSRF
+        from django.middleware.csrf import get_token
+        token = get_token(request)
+        serializer = UserSerializer(user)
+        data = serializer.data
+        data['csrf_token'] = token
+        return Response(data)
+    return Response({'detail': 'Invalid credentials'}, status=400)

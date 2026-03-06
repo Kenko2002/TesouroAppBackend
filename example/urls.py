@@ -12,5 +12,4 @@ urlpatterns = [
     path('', index, name='index'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    path('api/myuser/', user_profile, name='user_profile'),
-] + router.urls
+    path('api/myuser/', user_profile, name='user_profile'),    path('api/login/', api_login, name='api_login'),] + router.urls
