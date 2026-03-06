@@ -5,6 +5,11 @@
 echo "Installing requirements..."
 pip install -r requirements.txt --break-system-packages
 
+# Executa migrações
+echo "Running migrations..."
+python3 manage.py makemigrations
+python3 manage.py migrate
+
 # Coleta os arquivos estáticos
 echo "Collecting static files..."
 python3 manage.py collectstatic --noinput --clear
