@@ -55,7 +55,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api.urls'
-
+""
 import os 
 
 STATIC_URL = '/static/'
