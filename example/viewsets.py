@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Formulario
+from .serializers import UserSerializer, FormularioSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -12,3 +12,20 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+
+class FormularioViewSet(viewsets.ModelViewSet):
+    queryset = Formulario.objects.all()
+    serializer_class = FormularioSerializer
+
+    def get_permissions(self):
+        # only authenticated users can list/create/edit their own
+        if self.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            permission_classes = [permissions.AllowAny]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        # set current user as owner
+        serializer.save(user=self.request.user)

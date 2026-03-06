@@ -9,3 +9,16 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
+
+
+class Formulario(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='formularios')
+    created_at = models.DateTimeField(auto_now_add=True)
+    descricao = models.TextField()
+
+    class Meta:
+        verbose_name = 'Formulário'
+        verbose_name_plural = 'Formulários'
+
+    def __str__(self):
+        return f"Formulário de {self.user.username} em {self.created_at}"

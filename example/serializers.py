@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Formulario
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+
+class FormularioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Formulario
+        fields = ['id', 'user', 'created_at', 'descricao']
+        read_only_fields = ['id', 'created_at']
