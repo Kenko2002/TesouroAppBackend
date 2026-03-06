@@ -1,11 +1,13 @@
+#!/bin/bash
+
 
 # Instala as dependências
-echo "Installing pip..."
-python3 -m pip install --upgrade pip
-
 echo "Installing requirements..."
-python3 -m pip install -r requirements.txt
+pip install -r requirements.txt --break-system-packages
 
 # Coleta os arquivos estáticos
 echo "Collecting static files..."
 python3 manage.py collectstatic --noinput --clear
+
+
+echo "Build process completed!"
