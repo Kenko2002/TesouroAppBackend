@@ -22,8 +22,8 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('example.urls')),
+    path('admin/', admin.site.urls),    # frontend UI urls
+    path('', include('frontend.urls')),    path('', include('example.urls')),
     
     # Rotas do Swagger (Documentação)
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

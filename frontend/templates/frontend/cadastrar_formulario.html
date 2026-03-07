@@ -1,0 +1,18 @@
+{% extends "frontend/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Cadastrar Formulário{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-4">Cadastrar formulário</h1>
+        <p class="mb-4">Usuário: {{ request.user.username }} <a href="{% url 'logout' %}">(logout)</a></p>
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-primary" type="submit">Enviar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

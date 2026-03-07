@@ -1,0 +1,29 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Painel de Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1 class="mb-4">Bem-vindo, administrador {{ request.user.username }}!</h1>
+        <p><a class="btn btn-secondary" href="{% url 'logout' %}">Logout</a></p>
+
+        <h2 class="mt-5">Formulários registrados</h2>
+        {% if formularios %}
+            <div class="list-group">
+                {% for f in formularios %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ f.user.username }}</strong>
+                            <small class="text-muted">{{ f.created_at }}</small>
+                        </div>
+                        <p class="mb-0">{{ f.descricao }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">Não há formulários.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
