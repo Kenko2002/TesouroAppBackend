@@ -1,43 +1,130 @@
 {% load static %}
 {% load django_bootstrap5 %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}Meu site{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>{% block title %}Tesouro App{% endblock %}</title>
 
-    <!-- Bootstrap CSS (via django-bootstrap5) -->
     {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- Optional custom styles -->
-    <link rel="stylesheet" href="{% static 'frontend/css/site.css' %}" />
+    <style>
+        :root {
+            --bg-deep: #0d1b2a;
+            --bg-midnight: #1b263b;
+            --accent-blue: #415a77;
+            --text-white: #ffffff;
+            --primary-action: #0077b6;
+            --sidebar-width: 280px;
+        }
+
+        /* Texto Branco Global */
+        body, h1, h2, h3, h4, h5, h6, p, span, div, label, .nav-link, .list-group-item {
+            color: var(--text-white) !important;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            min-height: 100vh;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+        }
+
+        /* Indicador de Refresh */
+        #ptr-indicator {
+            position: fixed;
+            top: -60px; left: 0; width: 100%; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; transition: transform 0.2s;
+        }
+        .ptr-icon {
+            background: var(--bg-midnight);
+            border: 1px solid var(--accent-blue);
+            border-radius: 50%; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Sidebar e Navbar */
+        .sidebar { background-color: var(--bg-midnight) !important; border-right: 1px solid var(--accent-blue) !important; }
+        .navbar-dark { background-color: var(--bg-midnight) !important; border-bottom: 1px solid var(--accent-blue); }
+        .offcanvas { background-color: var(--bg-midnight) !important; }
+
+        {% if not request.user.is_staff and not request.user.is_superuser %}
+            @media (min-width: 992px) {
+                .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; left: 0; top: 0; z-index: 1000; }
+                .main-content { margin-left: var(--sidebar-width); }
+                .mobile-nav { display: none; }
+            }
+            @media (max-width: 991.98px) {
+                .main-content { margin-top: 70px; }
+                .swipe-area { position: fixed; top: 0; left: 0; width: 30px; height: 100%; z-index: 1030; }
+            }
+        {% else %}
+            .main-content { width: 100%; }
+        {% endif %}
+
+        /* Inputs e Cards */
+        .card { background-color: var(--bg-midnight); border: 1px solid var(--accent-blue); }
+        .form-control, .form-select { background-color: #152233 !important; border: 1px solid var(--accent-blue) !important; color: white !important; }
+
+        /* CORREÇÃO DO HOVER NOS ITENS DE LISTA */
+        .list-group-item { background-color: var(--bg-midnight) !important; border-color: var(--accent-blue) !important; }
+        .list-group-item-action:hover, .list-group-item-action:focus {
+            background-color: var(--accent-blue) !important;
+            color: white !important;
+        }
+
+        .nav-link:hover { background: var(--accent-blue); }
+        .nav-link.active { background: var(--primary-action) !important; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">Meu Projeto</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">{{ request.user.username }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Sair</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+    {% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}
+    <div id="ptr-indicator">
+        <div class="ptr-icon"><i class="bi bi-arrow-clockwise fs-4"></i></div>
+    </div>
+    <nav class="navbar navbar-dark fixed-top mobile-nav px-3 shadow">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="navbar-brand mb-0 h1 fs-5">Tesouro App</span>
     </nav>
+    <div class="swipe-area"></div>
+    <div class="offcanvas-lg offcanvas-start sidebar shadow" tabindex="-1" id="sidebarMenu">
+        <div class="offcanvas-header d-lg-none">
+            <h5 class="offcanvas-title fw-bold">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <div class="p-4 d-none d-lg-block border-bottom border-secondary mb-3">
+                <h4 class="fw-bold mb-0 text-white">Tesouro App</h4>
+            </div>
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{% url 'home_user' %}" class="nav-link {% if request.resolver_match.url_name == 'home_user' %}active{% endif %}">
+                        <i class="bi bi-house-door-fill"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'titles_visualization' %}" class="nav-link {% if request.resolver_match.url_name == 'titles_visualization' %}active{% endif %}">
+                        <i class="bi bi-graph-up"></i> Visualização de Títulos
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a href="{% url 'logout' %}" class="nav-link text-warning">
+                        <i class="bi bi-door-open-fill"></i> Sair
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
 
-    <main class="container">
+    <main class="{% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}main-content{% endif %} p-3 p-lg-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}" role="alert">
@@ -49,7 +136,45 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Bootstrap JS (via django-bootstrap5) -->
     {% bootstrap_javascript %}
+
+    {% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarEl = document.getElementById('sidebarMenu');
+            const bsOffcanvas = new bootstrap.Offcanvas(sidebarEl);
+            const ptrIndicator = document.getElementById('ptr-indicator');
+            const ptrArrow = ptrIndicator.querySelector('i');
+            let startX = 0, startY = 0, pulling = false;
+
+            document.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }, {passive: true});
+
+            document.addEventListener('touchmove', e => {
+                const diffY = e.touches[0].clientY - startY;
+                if (window.scrollY === 0 && diffY > 0 && !sidebarEl.classList.contains('show')) {
+                    pulling = true;
+                    const pullMove = Math.min(diffY / 2.5, 90);
+                    ptrIndicator.style.transform = `translateY(${pullMove}px)`;
+                    ptrArrow.style.transform = `rotate(${pullMove * 4}deg)`;
+                }
+            }, {passive: true});
+
+            document.addEventListener('touchend', e => {
+                const diffX = e.changedTouches[0].clientX - startX;
+                const diffY = e.changedTouches[0].clientY - startY;
+                if (Math.abs(diffY) < 60 && diffX > 80 && startX < 40) bsOffcanvas.show();
+                if (Math.abs(diffY) < 60 && diffX < -80 && sidebarEl.classList.contains('show')) bsOffcanvas.hide();
+                if (pulling) {
+                    if (diffY > 150) { location.reload(); }
+                    else { ptrIndicator.style.transform = `translateY(0)`; }
+                    pulling = false;
+                }
+            });
+        });
+    </script>
+    {% endif %}
 </body>
 </html>

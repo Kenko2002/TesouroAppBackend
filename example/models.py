@@ -17,14 +17,17 @@ class User(AbstractUser):
         return self.groups.all()
 
 
-class Formulario(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='formularios')
-    created_at = models.DateTimeField(auto_now_add=True)
-    descricao = models.TextField()
+    
+    
+class HistoricoTesouro(models.Model):
+    # JSONField armazena o dicionário completo (suportado nativamente no Postgres, SQLite e MySQL)
+    payload_cru = models.JSONField(verbose_name="Dados Brutos do Tesouro")
+    data_captura = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Formulário'
-        verbose_name_plural = 'Formulários'
+        verbose_name = 'Histórico do Tesouro'
+        verbose_name_plural = 'Históricos do Tesouro'
+        ordering = ['-data_captura']
 
     def __str__(self):
-        return f"Formulário de {self.user.username} em {self.created_at}"
+        return f"Captura em {self.data_captura.strftime('%d/%m/%Y %H:%M')}"

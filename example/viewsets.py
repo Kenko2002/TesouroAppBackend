@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
-from .models import User, Formulario
-from .serializers import UserSerializer, FormularioSerializer
+from .models import User,  HistoricoTesouro
+from .serializers import UserSerializer, HistoricoTesouroSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -14,9 +14,11 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class FormularioViewSet(viewsets.ModelViewSet):
-    queryset = Formulario.objects.all()
-    serializer_class = FormularioSerializer
+        
+        
+class HistoricoTesouroViewSet(viewsets.ModelViewSet):
+    queryset = HistoricoTesouro.objects.all()
+    serializer_class = HistoricoTesouroSerializer
 
     def get_permissions(self):
         # only authenticated users can list/create/edit their own
@@ -25,7 +27,3 @@ class FormularioViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
-
-    def perform_create(self, serializer):
-        # set current user as owner
-        serializer.save(user=self.request.user)

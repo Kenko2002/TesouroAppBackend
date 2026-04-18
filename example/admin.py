@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Formulario
+from .models import User, HistoricoTesouro
 
 @admin.register(User)
 class MyUserAdmin(UserAdmin):
@@ -15,9 +15,10 @@ class MyUserAdmin(UserAdmin):
         ('Informações Adicionais', {'fields': ('bio',)}),
     )
 
-@admin.register(Formulario)
-class FormularioAdmin(admin.ModelAdmin):
-    list_display = ('user', 'created_at', 'descricao')
-    readonly_fields = ('created_at',)
-    search_fields = ('user__username', 'descricao')
 
+
+@admin.register(HistoricoTesouro)
+class HistoricoTesouroAdmin(admin.ModelAdmin):
+    list_display = ('data_captura',)
+    readonly_fields = ('data_captura',)
+    search_fields = ('payload_cru','data_captura')

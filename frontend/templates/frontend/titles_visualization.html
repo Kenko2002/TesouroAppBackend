@@ -1,0 +1,132 @@
+{% extends "frontend/base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block title %}Visualização de Títulos - Tesouro App{% endblock %}
+
+{% block content %}
+<style>
+    .modal-content {
+        background-color: var(--bg-midnight) !important;
+        border: 1px solid var(--accent-blue) !important;
+        color: var(--text-white) !important;
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--accent-blue) !important;
+    }
+    .modal-footer {
+        border-top: 1px solid var(--accent-blue) !important;
+    }
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+    }
+    .btn-close {
+        filter: invert(1);
+    }
+</style>
+<div class="container-fluid">
+    <h1 class="mb-4">Últimas Atualizações dos Títulos</h1>
+    <div class="row">
+        {% for titulo in titulos %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card border-{{ titulo.color }} titulo-card" data-name="{{ titulo.name }}" style="cursor: pointer;">
+                <div class="card-header bg-{{ titulo.color }} text-white">
+                    <h5 class="card-title mb-0">{{ titulo.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>Rentabilidade:</strong> {{ titulo.profitability }}
+                    </p>
+                    <p class="card-text">
+                        <strong>Valor Unitário:</strong> R$ {{ titulo.value|floatformat:2 }}
+                    </p>
+                    <span class="badge bg-{{ titulo.color }}">{{ titulo.group }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Nenhum título disponível no momento.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal para Série Temporal -->
+<div class="modal fade" id="tituloModal" tabindex="-1" aria-labelledby="tituloModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-midnight text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloModalLabel">Série Temporal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <canvas id="tituloChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.1/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = new bootstrap.Modal(document.getElementById('tituloModal'));
+    let chart;
+
+    document.querySelectorAll('.titulo-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const tituloName = this.getAttribute('data-name');
+            loadTituloSeries(tituloName);
+        });
+    });
+
+    function loadTituloSeries(name) {
+        fetch(`/api/titulo-series/?name=${encodeURIComponent(name)}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('tituloModalLabel').textContent = `Série Temporal: ${data.label}`;
+                
+                const ctx = document.getElementById('tituloChart').getContext('2d');
+                
+                if (chart) {
+                    chart.destroy();
+                }
+                
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: data.label,
+                            data: data.data,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            },
+                            y: {
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+                
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Erro ao carregar série:', error);
+                alert('Erro ao carregar dados da série temporal.');
+            });
+    }
+});
+</script>
+{% endblock %}

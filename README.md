@@ -115,7 +115,6 @@ Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_mediu
 
 
 
-
-
- .\.venv\Scripts\Activate  
+py -m venv venv 
+ .\venv\Scripts\Activate  
  pip install -r requirements.txt

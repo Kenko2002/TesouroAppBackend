@@ -39,11 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'example',
-    'frontend',
+    
+    # Bibliotecas
     'rest_framework',
     'drf_spectacular',
     'django_bootstrap5',
+    'django_apscheduler',
+    
+    # Seus Apps
+    'example.apps.ExampleConfig', # Use o nome da classe que criamos acima
+    'frontend',
 ]
 
 
@@ -126,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
