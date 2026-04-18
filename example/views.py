@@ -38,11 +38,6 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_profile(request):
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
 
 @extend_schema(request=LoginSerializer, responses=UserSerializer)
 @api_view(['POST'])
@@ -67,3 +62,11 @@ def api_login(request):
         data['csrf_token'] = token
         return Response(data)
     return Response({'detail': 'Invalid credentials'}, status=400)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
